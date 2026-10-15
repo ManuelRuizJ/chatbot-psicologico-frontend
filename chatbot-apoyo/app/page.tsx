@@ -1,9 +1,8 @@
 "use client";
-import Chat from "@/components/Chat";
-
 import { useState } from "react";
 import Consentimiento from "@/components/Consentimiento";
 import { startSession, ApiError } from "@/lib/api";
+import Chat from "@/components/Chat";
 
 export default function Home() {
   const [sessionId, setSessionId] = useState<string | null>(null);
