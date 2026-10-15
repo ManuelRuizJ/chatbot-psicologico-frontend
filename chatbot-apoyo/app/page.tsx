@@ -1,4 +1,5 @@
 "use client";
+import Chat from "@/components/Chat";
 
 import { useState } from "react";
 import Consentimiento from "@/components/Consentimiento";
@@ -31,5 +32,5 @@ export default function Home() {
   }
 
   // Placeholder: aquí irá el chat (siguiente paso)
-  return <p className="p-8">Sesión iniciada: {sessionId}</p>;
+  return <Chat sessionId={sessionId} />;
 }
