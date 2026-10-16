@@ -36,6 +36,7 @@ export default function Chat({ sessionId }: { sessionId: string }) {
   const [areas, setAreas] = useState<Areas | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     getAreas().then(setAreas).catch(() => setAreas(null));
@@ -44,6 +45,13 @@ export default function Chat({ sessionId }: { sessionId: string }) {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
+
+  useEffect(() => {
+  const el = textareaRef.current;
+  if (!el) return;
+  el.style.height = "auto";
+  el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+}, [input]);
 
   function add(msg: Omit<Msg, "id">) {
     setMessages((prev) => [...prev, { ...msg, id: nextId.current++ }]);
@@ -62,6 +70,7 @@ export default function Chat({ sessionId }: { sessionId: string }) {
       add({ role: "error", text: mensajeDeError(e) });
     } finally {
       setSending(false);
+      textareaRef.current?.focus();
     }
   }
 
@@ -94,7 +103,7 @@ export default function Chat({ sessionId }: { sessionId: string }) {
               </p>
             </div>
           ) : m.role === "error" ? (
-            <p key={m.id} role="alert" className="text-sm text-acento">
+            <p key={m.id} role="alert" className="max-w-[85%] rounded-lg border border-error-borde bg-error-fondo px-4 py-2.5 text-sm text-error-texto">
               {m.text}
             </p>
           ) : (
@@ -121,12 +130,13 @@ export default function Chat({ sessionId }: { sessionId: string }) {
           e.preventDefault();
           submit();
         }}
-        className="flex items-end gap-2 border-t border-borde px-4 py-3"
+        className="flex items-end gap-2 border-t border-borde px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]"
       >
         <label htmlFor="mensaje" className="sr-only">
           Escribe tu mensaje
         </label>
         <textarea
+          ref = {textareaRef}
           id="mensaje"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -136,9 +146,9 @@ export default function Chat({ sessionId }: { sessionId: string }) {
               submit();
             }
           }}
-          rows={2}
+          rows={1}
           placeholder="Escribe aquí…"
-          className="flex-1 resize-none rounded-lg border border-borde bg-superficie px-3 py-2 focus-visible:outline-2 focus-visible:outline-acento"
+          className="max-h-40 flex-1 resize-none overflow-y-auto rounded-lg border border-borde bg-superficie px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-acento"
         />
         <button
           type="submit"
