@@ -4,10 +4,20 @@ export type Referral = AreaCode | null;
 
 export type ErrorCode =
   | "NO_CONSENT"
+  | "INVALID_ACCESS_CODE"
+  | "INVALID_PARTICIPANT"
   | "SESSION_NOT_FOUND"
   | "EMPTY_MESSAGE"
   | "LLM_UNAVAILABLE"
-  | "NETWORK"; // solo del frontend: no hubo respuesta del servidor
+  | "NETWORK" // solo del frontend: no hubo respuesta del servidor
+  | "UNKNOWN"; // solo del frontend: respuesta con formato inesperado (ej. 422)
+
+export interface StartParams {
+  consentAccepted: boolean;
+  name: string;
+  email: string;
+  accessCode: string;
+}
 
 export interface ChatResponse {
   reply: string;

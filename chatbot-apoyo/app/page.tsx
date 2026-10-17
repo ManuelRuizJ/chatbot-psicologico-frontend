@@ -1,35 +1,62 @@
 "use client";
+
 import { useState } from "react";
 import Consentimiento from "@/components/Consentimiento";
-import { startSession, ApiError } from "@/lib/api";
 import Chat from "@/components/Chat";
+import { startSession, ApiError } from "@/lib/api";
+import type { StartParams } from "@/lib/types";
+
+function mensajeDeInicio(e: unknown): string {
+  if (e instanceof ApiError) {
+    switch (e.code) {
+      case "INVALID_ACCESS_CODE":
+        return "El código de acceso no es válido. Revísalo e inténtalo de nuevo.";
+      case "INVALID_PARTICIPANT":
+        return "Revisa tu nombre y correo.";
+      case "NETWORK":
+        return "No se pudo conectar con el servidor. Intenta de nuevo.";
+    }
+  }
+  return "No se pudo iniciar la sesión. Intenta de nuevo.";
+}
 
 export default function Home() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
 
-  async function handleAccept() {
+  async function handleAccept(p: StartParams) {
     setLoading(true);
     setError(null);
+    setAviso(null);
     try {
-      const { session_id } = await startSession(true);
+      const { session_id } = await startSession(p);
       setSessionId(session_id);
     } catch (e) {
-      setError(
-        e instanceof ApiError && e.code === "NETWORK"
-          ? "No se pudo conectar con el servidor. Intenta de nuevo."
-          : "No se pudo iniciar la sesión. Intenta de nuevo."
-      );
+      setError(mensajeDeInicio(e));
     } finally {
       setLoading(false);
     }
   }
 
-  if (!sessionId) {
-    return <Consentimiento onAccept={handleAccept} loading={loading} error={error} />;
+  function salir(motivo?: string) {
+    setSessionId(null);
+    setAviso(motivo ?? null);
   }
 
-  // Placeholder: aquí irá el chat (siguiente paso)
-  return <Chat sessionId={sessionId} />;
+  if (!sessionId) {
+    return (
+      <Consentimiento onAccept={handleAccept} loading={loading} error={error} aviso={aviso} />
+    );
+  }
+
+  return (
+    <Chat
+      sessionId={sessionId}
+      onSessionLost={() =>
+        salir("Tu sesión terminó o expiró. Para continuar, vuelve a aceptar el consentimiento.")
+      }
+    />
+  );
 }

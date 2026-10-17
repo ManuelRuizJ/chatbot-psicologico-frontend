@@ -29,7 +29,7 @@ function mensajeDeError(e: unknown): string {
   return "Ocurrió un error inesperado. Intenta de nuevo.";
 }
 
-export default function Chat({ sessionId }: { sessionId: string }) {
+export default function Chat({ sessionId, onSessionLost, }: { sessionId: string; onSessionLost: () => void; }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -67,6 +67,10 @@ export default function Chat({ sessionId }: { sessionId: string }) {
       const res = await sendMessage(sessionId, text);
       add({ role: "bot", text: res.reply, referral: res.referral });
     } catch (e) {
+      if (e instanceof ApiError && (e.code === "SESSION_NOT_FOUND" || e.code === "NO_CONSENT")) {
+        onSessionLost();
+        return;
+      }
       add({ role: "error", text: mensajeDeError(e) });
     } finally {
       setSending(false);
