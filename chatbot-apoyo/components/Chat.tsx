@@ -29,7 +29,8 @@ function mensajeDeError(e: unknown): string {
   return "Ocurrió un error inesperado. Intenta de nuevo.";
 }
 
-export default function Chat({ sessionId, onSessionLost, }: { sessionId: string; onSessionLost: () => void; }) {
+export default function Chat({ sessionId, onSessionLost, onEnd }: { sessionId: string; onSessionLost: () => void; onEnd: () => void }) {
+  const [confirmando, setConfirmando] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -37,6 +38,12 @@ export default function Chat({ sessionId, onSessionLost, }: { sessionId: string;
   const endRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const RAPIDAS = [
+    "Estoy estresado por los exámenes",
+    "Me cuesta dormir",
+    "Tengo muchas tareas pendientes",
+    "Me siento ansioso",
+  ];
 
   useEffect(() => {
     getAreas().then(setAreas).catch(() => setAreas(null));
@@ -80,11 +87,34 @@ export default function Chat({ sessionId, onSessionLost, }: { sessionId: string;
 
   return (
     <div className="mx-auto flex h-dvh max-w-2xl flex-col">
-      <header className="border-b border-borde px-4 py-3">
+      <header className="flex items-center justify-between gap-3 border-b border-borde px-4 py-3">
         <p className="text-sm text-texto-suave">
           Este asistente ofrece apoyo inicial y no sustituye la atención de un
           profesional.
         </p>
+        {confirmando ? (
+          <div className="flex shrink-0 items-center gap-2 text-sm">
+            <button
+              onClick={onEnd}
+              className="rounded-md bg-acento px-3 py-1.5 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acento"
+            >
+              Sí, terminar
+            </button>
+            <button
+              onClick={() => setConfirmando(false)}
+              className="rounded-md border border-borde px-3 py-1.5 focus-visible:outline-2 focus-visible:outline-acento"
+            >
+              Cancelar
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmando(true)}
+            className="shrink-0 rounded-md border border-borde px-3 py-1.5 text-sm focus-visible:outline-2 focus-visible:outline-acento"
+          >
+            Terminar sesión
+          </button>
+        )}
       </header>
 
       <div
@@ -94,9 +124,26 @@ export default function Chat({ sessionId, onSessionLost, }: { sessionId: string;
         className="flex-1 space-y-4 overflow-y-auto px-4 py-6"
       >
         {messages.length === 0 && (
-          <p className="text-texto-suave">
-            Puedes escribir cómo te sientes. Estoy aquí para escucharte.
-          </p>
+          <div>
+            <p className="text-texto-suave">
+              Puedes escribir cómo te sientes. Estoy aquí para escucharte.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {RAPIDAS.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => {
+                    setInput(t);
+                    textareaRef.current?.focus();
+                  }}
+                  className="rounded-full border border-borde bg-superficie px-4 py-2 text-sm hover:bg-acento-suave focus-visible:outline-2 focus-visible:outline-acento"
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {messages.map((m) =>
@@ -125,7 +172,22 @@ export default function Chat({ sessionId, onSessionLost, }: { sessionId: string;
           )
         )}
 
-        {sending && <p className="text-sm text-texto-suave">Escribiendo…</p>}
+        {sending && (
+          <div
+            role="status"
+            className="inline-flex items-center gap-1.5 rounded-2xl border border-borde bg-superficie px-4 py-3"
+          >
+            <span className="sr-only">El asistente está escribiendo</span>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                aria-hidden="true"
+                className="h-2 w-2 rounded-full bg-acento motion-safe:animate-pulse"
+                style={{ animationDelay: `${i * 200}ms` }}
+              />
+            ))}
+          </div>
+        )}
         <div ref={endRef} />
       </div>
 
