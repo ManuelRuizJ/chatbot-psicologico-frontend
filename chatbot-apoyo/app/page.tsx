@@ -5,6 +5,7 @@ import Consentimiento from "@/components/Consentimiento";
 import Chat from "@/components/Chat";
 import { startSession, ApiError } from "@/lib/api";
 import type { StartParams } from "@/lib/types";
+import Bienvenida from "@/components/Bienvenida";
 
 function mensajeDeInicio(e: unknown): string {
   if (e instanceof ApiError) {
@@ -25,6 +26,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
+  const [vioBienvenida, setVioBienvenida] = useState(false);
 
   async function handleAccept(p: StartParams) {
     setLoading(true);
@@ -43,6 +45,10 @@ export default function Home() {
   function salir(motivo?: string) {
     setSessionId(null);
     setAviso(motivo ?? null);
+  }
+
+  if (!sessionId && !vioBienvenida) {
+    return <Bienvenida onStart={() => setVioBienvenida(true)} />;
   }
 
   if (!sessionId) {
