@@ -8,6 +8,9 @@
   --color-acento-suave: #F0E7E0;
   --color-borde:        #E8E1D9;
   --color-texto-suave:  #6B625B;
+  --color-error-fondo:  #FBEDEA;
+  --color-error-borde:  #E8C4BC;
+  --color-error-texto:  #7A2E22;
 }
 
 body {
