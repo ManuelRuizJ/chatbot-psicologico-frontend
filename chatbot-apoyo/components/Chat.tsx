@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ApiError, getAreas, sendMessage } from "@/lib/api";
 import type { Areas, Referral } from "@/lib/types";
 import TarjetaDerivacion from "./TarjetaDerivacion";
+import AyudaAhora from "./AyudaAhora";
 
 interface Msg {
   id: number;
@@ -116,6 +117,8 @@ export default function Chat({ sessionId, onSessionLost, onEnd }: { sessionId: s
           </button>
         )}
       </header>
+
+      <AyudaAhora areas={areas} />
 
       <div
         role="log"
