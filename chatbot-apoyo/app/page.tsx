@@ -57,6 +57,7 @@ export default function Home() {
       onSessionLost={() =>
         salir("Tu sesión terminó o expiró. Para continuar, vuelve a aceptar el consentimiento.")
       }
+      onEnd={() => salir("Sesión terminada. Tu conversación se borró de esta pantalla.")}
     />
   );
 }
