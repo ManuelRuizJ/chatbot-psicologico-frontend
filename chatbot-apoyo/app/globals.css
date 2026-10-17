@@ -11,8 +11,8 @@
   --color-error-fondo:  #FBEDEA;
   --color-error-borde:  #E8C4BC;
   --color-error-texto:  #7A2E22;
-  --color-apoyo: #3F5F6E;
-  --color-apoyo-suave: #E6EDF0;
+  --color-apoyo:        #3F5F6E;
+  --color-apoyo-suave:  #E6EDF0;
 }
 
 body {
