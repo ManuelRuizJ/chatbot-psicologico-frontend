@@ -1,6 +1,6 @@
 import type { Areas, ChatResponse, ErrorCode, Referral, RiskLevel, StartParams } from "./types";
 import { AREA_NAMES } from "./types";
-import { isValidEmail } from "./validation";
+import { isValidEmail, isValidName } from "./validation";
 
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -50,11 +50,14 @@ const MOCK_REFERRAL: Record<RiskLevel, Referral> = {
 const mock = {
   async startSession(p: StartParams) {
     await wait(300);
-    if (!p.consentAccepted) throw new ApiError("NO_CONSENT", "Consentimiento requerido");
+
+    if (!p.consentAccepted) { 
+      throw new ApiError("NO_CONSENT", "Consentimiento requerido");
+    }
     if (p.accessCode.trim() !== MOCK_ACCESS_CODE) {
       throw new ApiError("INVALID_ACCESS_CODE", "Código de acceso inválido");
     }
-    if (!p.name.trim() || !isValidEmail(p.email)) {
+    if (!isValidName(p.name) || !isValidEmail(p.email)) {
       throw new ApiError("INVALID_PARTICIPANT", "Nombre o correo inválido");
     }
     const session_id = crypto.randomUUID();

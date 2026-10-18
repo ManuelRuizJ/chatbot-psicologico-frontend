@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { isValidEmail } from "@/lib/validation";
+import { isValidEmail, isValidName, MAX_NAME, MAX_EMAIL } from "@/lib/validation";
+import { leerRecordado, borrarRecordado } from "@/lib/recordar";
 import type { StartParams } from "@/lib/types";
 
 interface Props {
-  onAccept: (p: StartParams) => Promise<void>;
+  onAccept: (p: StartParams, recordar: boolean) => Promise<void>;
   loading: boolean;
   error: string | null;
   aviso: string | null; // aviso amable, p. ej. cuando la sesión expiró
@@ -15,34 +16,37 @@ const campo =
   "mt-1 w-full rounded-lg border border-borde bg-superficie px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-acento";
 
 export default function Consentimiento({ onAccept, loading, error, aviso }: Props) {
-  // Nombre y correo viven solo aquí, en el estado del formulario.
-  // Se borran en cuanto se envían: no van a localStorage, ni a la URL, ni a /chat.
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  // Si hay datos recordados se precargan; "Acepto participar" nunca se precarga.
+  // Se lee en el estado inicial porque este componente solo se monta en el
+  // navegador (viene después de la bienvenida), así que no hay desajuste de hidratación.
+  const [inicial] = useState(leerRecordado);
+  const [name, setName] = useState(inicial?.name ?? "");
+  const [email, setEmail] = useState(inicial?.email ?? "");
+  const [code, setCode] = useState(inicial?.code ?? "");
+  const [recordar, setRecordar] = useState(inicial !== null);
+  const [hayGuardado, setHayGuardado] = useState(inicial !== null);
   const [checked, setChecked] = useState(false);
   const [tocado, setTocado] = useState(false);
 
-  const nombreOk = name.trim().length > 0;
+  const nombreOk = isValidName(name);
   const correoOk = isValidEmail(email);
   const codigoOk = code.trim().length > 0;
   const listo = nombreOk && correoOk && codigoOk && checked;
+
+  function olvidar() {
+    borrarRecordado();
+    setName("");
+    setEmail("");
+    setCode("");
+    setRecordar(false);
+    setHayGuardado(false);
+  }
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     setTocado(true);
     if (!listo || loading) return;
-    const datos: StartParams = {
-      consentAccepted: true,
-      name,
-      email,
-      accessCode: code,
-    };
-    // Se limpian nombre y correo apenas se envían. El código y la casilla se
-    // conservan para que, si el código es incorrecto, pueda reintentar sin reescribir todo.
-    setName("");
-    setEmail("");
-    await onAccept(datos);
+    await onAccept({ consentAccepted: true, name, email, accessCode: code }, recordar);
   }
 
   return (
@@ -136,6 +140,10 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
               que se consulte, corrija o elimine tu constancia, y retirarte del
               piloto.
             </li>
+            <li>
+              Si lo eliges, tu nombre, correo y código de acceso se guardan solo en tu
+              propio navegador, no en nuestros servidores. Puedes borrarlos cuando quieras.
+            </li>
             {/* PENDIENTE (texto v2 con [CORCHETES]): responsable de los datos,
                 tiempo de conservación y correo de contacto. Agregar aquí cuando
                 la coordinadora los confirme. No mostrar corchetes al estudiante. */}
@@ -166,7 +174,7 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
             className={campo}
           />
           {tocado && !nombreOk && (
-            <p className="mt-1 text-sm text-error-texto">Escribe tu nombre.</p>
+            <p className="mt-1 text-sm text-error-texto">Escribe tu nombre (mínimo 2 caracteres, con letras).</p>
           )}
         </div>
 
@@ -199,6 +207,27 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
           />
           {tocado && !codigoOk && (
             <p className="mt-1 text-sm text-error-texto">Escribe el código que te dio el equipo.</p>
+          )}
+        </div>
+        
+        <div>
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={recordar}
+              onChange={(e) => setRecordar(e.target.checked)}
+              className="mt-1 h-5 w-5 accent-acento"
+            />
+            <span>Recordarme en este dispositivo (se guarda solo en tu navegador)</span>
+          </label>
+          {hayGuardado && (
+            <button
+              type="button"
+              onClick={olvidar}
+              className="mt-2 text-sm text-texto-suave underline focus-visible:outline-2 focus-visible:outline-acento"
+            >
+              Olvidar mis datos en este dispositivo
+            </button>
           )}
         </div>
 

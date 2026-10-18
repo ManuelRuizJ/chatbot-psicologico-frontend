@@ -6,6 +6,7 @@ import Chat from "@/components/Chat";
 import { startSession, ApiError } from "@/lib/api";
 import type { StartParams } from "@/lib/types";
 import Bienvenida from "@/components/Bienvenida";
+import { guardarRecordado, borrarRecordado } from "@/lib/recordar";
 
 function mensajeDeInicio(e: unknown): string {
   if (e instanceof ApiError) {
@@ -28,12 +29,17 @@ export default function Home() {
   const [aviso, setAviso] = useState<string | null>(null);
   const [vioBienvenida, setVioBienvenida] = useState(false);
 
-  async function handleAccept(p: StartParams) {
+  async function handleAccept(p: StartParams, recordar: boolean) {
     setLoading(true);
     setError(null);
     setAviso(null);
     try {
       const { session_id } = await startSession(p);
+      if (recordar) {
+        guardarRecordado({ name: p.name.trim(), email: p.email.trim(), code: p.accessCode.trim() });
+      } else {
+        borrarRecordado();
+      }
       setSessionId(session_id);
     } catch (e) {
       setError(mensajeDeInicio(e));
