@@ -9,6 +9,7 @@ export type ErrorCode =
   | "SESSION_NOT_FOUND"
   | "EMPTY_MESSAGE"
   | "LLM_UNAVAILABLE"
+  | "DB_UNAVAILABLE"
   | "NETWORK" // solo del frontend: no hubo respuesta del servidor
   | "UNKNOWN"; // solo del frontend: respuesta con formato inesperado (ej. 422)
 

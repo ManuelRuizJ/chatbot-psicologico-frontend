@@ -28,11 +28,13 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [aviso, setAviso] = useState<string | null>(null);
   const [vioBienvenida, setVioBienvenida] = useState(false);
+  const [dbCaida, setDbCaida] = useState(false);
 
   async function handleAccept(p: StartParams, recordar: boolean) {
     setLoading(true);
     setError(null);
     setAviso(null);
+    setDbCaida(false);
     try {
       const { session_id } = await startSession(p);
       if (recordar) {
@@ -42,7 +44,11 @@ export default function Home() {
       }
       setSessionId(session_id);
     } catch (e) {
-      setError(mensajeDeInicio(e));
+      if (e instanceof ApiError && e.code === "DB_UNAVAILABLE") {
+        setDbCaida(true);
+      } else {
+        setError(mensajeDeInicio(e));
+      }
     } finally {
       setLoading(false);
     }
@@ -59,7 +65,13 @@ export default function Home() {
 
   if (!sessionId) {
     return (
-      <Consentimiento onAccept={handleAccept} loading={loading} error={error} aviso={aviso} />
+      <Consentimiento 
+        onAccept={handleAccept} 
+        loading={loading} 
+        error={error} 
+        aviso={aviso}
+        dbCaida={dbCaida} 
+      />
     );
   }
 
