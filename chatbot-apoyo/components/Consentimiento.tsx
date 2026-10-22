@@ -10,12 +10,13 @@ interface Props {
   loading: boolean;
   error: string | null;
   aviso: string | null; // aviso amable, p. ej. cuando la sesión expiró
+  dbCaida: boolean;
 }
 
 const campo =
   "mt-1 w-full rounded-lg border border-borde bg-superficie px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-acento";
 
-export default function Consentimiento({ onAccept, loading, error, aviso }: Props) {
+export default function Consentimiento({ onAccept, loading, error, aviso, dbCaida }: Props) {
   // Si hay datos recordados se precargan; "Acepto participar" nunca se precarga.
   // Se lee en el estado inicial porque este componente solo se monta en el
   // navegador (viene después de la bienvenida), así que no hay desajuste de hidratación.
@@ -246,7 +247,10 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
               onChange={(e) => setRecordar(e.target.checked)}
               className="mt-1 h-5 w-5 accent-acento"
             />
-            <span>Recordarme en este dispositivo (se guarda solo en tu navegador)</span>
+            <span>
+              Recordarme en este dispositivo (se guarda solo en tu navegador).{" "}
+              <strong>No lo uses en equipos compartidos.</strong>
+            </span>
           </label>
           {hayGuardado && (
             <button
@@ -282,6 +286,22 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
           >
             {error}
           </p>
+        )}
+
+        {dbCaida && (
+          <div
+            role="alert"
+            className="rounded-lg border border-error-borde bg-error-fondo px-4 py-3 text-sm text-error-texto"
+          >
+            <p>No pudimos registrar tu consentimiento. Intenta de nuevo en unos minutos.</p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-3 rounded-md border border-error-borde bg-superficie px-3 py-1.5 font-medium focus-visible:outline-2 focus-visible:outline-acento disabled:opacity-40"
+            >
+              {loading ? "Reintentando…" : "Reintentar"}
+            </button>
+          </div>
         )}
 
         <button

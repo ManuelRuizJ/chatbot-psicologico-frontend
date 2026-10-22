@@ -39,6 +39,7 @@ export default function Chat({ sessionId, onSessionLost, onEnd }: { sessionId: s
   const endRef = useRef<HTMLDivElement>(null);
   const nextId = useRef(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const foeMostrada = useRef(false);
   const RAPIDAS = [
     "Estoy estresado por los exámenes",
     "Me cuesta dormir",
@@ -73,7 +74,12 @@ export default function Chat({ sessionId, onSessionLost, onEnd }: { sessionId: s
     setSending(true);
     try {
       const res = await sendMessage(sessionId, text);
-      add({ role: "bot", text: res.reply, referral: res.referral });
+      let referral = res.referral;
+      if (referral === "FOE") {
+        if (foeMostrada.current) referral = null; // ya se mostró en esta sesión
+        else foeMostrada.current = true;
+      }
+      add({ role: "bot", text: res.reply, referral });
     } catch (e) {
       if (e instanceof ApiError && (e.code === "SESSION_NOT_FOUND" || e.code === "NO_CONSENT")) {
         onSessionLost();
