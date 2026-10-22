@@ -64,9 +64,11 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
 
       <div className="mt-6 space-y-5 leading-relaxed">
         <p>
-          Estás por participar en la prueba piloto de un chatbot desarrollado
-          como proyecto de tesis (ASE III), diseñado para ofrecer orientación
-          preliminar sobre manejo de estrés y ansiedad.
+          Estás por participar en la prueba piloto de un chatbot desarrollado como
+          proyecto de tesis (ASE III), diseñado para ofrecer orientación preliminar
+          sobre el manejo del estrés y la ansiedad, tomando en cuenta su intensidad, su
+          duración y cómo afectan tu vida diaria. Antes de continuar, es importante que
+          leas lo siguiente.
         </p>
 
         <section>
@@ -83,12 +85,23 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
         <section>
           <h2 className="font-semibold">Qué hacer en caso de emergencia</h2>
           <p className="mt-1">
-            Este chatbot no está diseñado para atender emergencias de salud
-            mental. Si en algún momento tienes pensamientos de hacerte daño o
-            estás en una situación de crisis, contacta de inmediato a la
-            Coordinación de Atención de Incidentes Inmediata de la universidad
-            o a alguien de confianza que esté cerca de ti. Dentro del chat
-            tendrás siempre a la mano un botón con los contactos.
+            Este chatbot <strong>no</strong> está diseñado para atender emergencias de salud mental y{" "}
+            <strong>no avisa a nadie por ti</strong>: si necesitas ayuda, tienes que
+            comunicarte tú con alguien. Si en algún momento tienes pensamientos de
+            hacerte daño o estás en una situación de crisis, contacta de inmediato a:
+          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            <li>Coordinación de Intervención Inmediata de Incidentes: tel. 14002, de 8:00 am a 5:00 pm, E-202</li>
+            <li>Clínica OPTA: tel. 12318, de 8:00 am a 7:00 pm, C-102</li>
+            <li>Formación y Orientación Educativa: tel. 14115, de 8:00 am a 5:00 pm, H-201</li>
+          </ul>
+          <p className="mt-3">Fuera de esos horarios o en una emergencia:</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            <li>Emergencias: 911</li>
+            <li>Línea de la Vida (CONASAMA, Secretaría de Salud): 800 911 2000, gratuita, las 24 horas</li>
+          </ul>
+          <p className="mt-2">
+            Dentro del chat tendrás siempre a la mano un botón con los contactos de la universidad.
           </p>
         </section>
 
@@ -120,33 +133,48 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
           <h2 className="font-semibold">Aviso de privacidad</h2>
           <ul className="mt-1 list-disc space-y-1 pl-5">
             <li>
-              <strong>Datos personales que se recaban:</strong> tu nombre y tu
-              correo electrónico, únicamente como constancia de que aceptaste
-              participar. No se ligan a tus conversaciones ni a los niveles de
-              alerta.
+              <strong>Responsables de los datos:</strong> Acosta Avila, David André
+              (david.acosta@iberopuebla.mx); Díaz Palacios, Diego Alonso
+              (diegoalonso.diaz@iberopuebla.mx); Huesca Arce, Alejandro
+              (194786@iberopuebla.mx); Perea Morales, Jesús Emilio
+              (195487@iberopuebla.mx); Ruiz Fuentes, Jesús Manuel
+              (jesus.ruiz@iberopuebla.mx).
             </li>
             <li>
-              <strong>Para qué se usan:</strong> para comprobar que cada
-              participante aceptó este consentimiento y para llevar el control
-              de los 50 participantes del piloto.
+              <strong>Datos personales que se recaban:</strong> tu nombre y tu correo
+              electrónico, únicamente como constancia de que aceptaste participar. No se
+              ligan a tus conversaciones ni a los niveles de alerta. No se recaban datos
+              sensibles.
             </li>
             <li>
-              <strong>Con quién se comparten:</strong> no se comparten con
-              terceros. Los mensajes que escribes en el chat sí se envían al
-              proveedor de inteligencia artificial, como se explicó arriba.
+              <strong>Opción «Recordarme en este dispositivo»:</strong> si la marcas, tu
+              nombre, correo y código de acceso se guardan solo en tu navegador (no en
+              nuestros servidores) para no escribirlos de nuevo. No la uses en equipos
+              compartidos. Puedes borrarlos cuando quieras con «Olvidar mis datos en este
+              dispositivo». Los mensajes del chat nunca se guardan en tu navegador.
             </li>
             <li>
-              <strong>Tus derechos:</strong> puedes pedir en cualquier momento
-              que se consulte, corrija o elimine tu constancia, y retirarte del
-              piloto.
+              <strong>Para qué se usan:</strong> exclusivamente con fines académicos y de
+              investigación, para comprobar que cada participante aceptó este
+              consentimiento y llevar el control de los participantes del piloto.
             </li>
             <li>
-              Si lo eliges, tu nombre, correo y código de acceso se guardan solo en tu
-              propio navegador, no en nuestros servidores. Puedes borrarlos cuando quieras.
+              <strong>Con quién se comparten:</strong> no se comparten con terceros. Los
+              mensajes que escribes en el chat sí se envían al proveedor de inteligencia
+              artificial, como se explicó arriba.
             </li>
-            {/* PENDIENTE (texto v2 con [CORCHETES]): responsable de los datos,
-                tiempo de conservación y correo de contacto. Agregar aquí cuando
-                la coordinadora los confirme. No mostrar corchetes al estudiante. */}
+            <li>
+              <strong>Cuánto tiempo se conservan:</strong> hasta mediados de diciembre de
+              2026; después se eliminan.
+            </li>
+            <li>
+              <strong>Tus derechos:</strong> puedes pedir en cualquier momento que se
+              consulte, corrija o elimine tu constancia, y retirarte del piloto.
+            </li>
+            <li>
+              <strong>Contacto:</strong> para ejercer tus derechos, escribe a cualquiera
+              de los responsables (correos arriba).
+            </li>
           </ul>
         </section>
 
