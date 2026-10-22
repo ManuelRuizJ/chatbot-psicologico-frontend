@@ -246,7 +246,10 @@ export default function Consentimiento({ onAccept, loading, error, aviso }: Prop
               onChange={(e) => setRecordar(e.target.checked)}
               className="mt-1 h-5 w-5 accent-acento"
             />
-            <span>Recordarme en este dispositivo (se guarda solo en tu navegador)</span>
+            <span>
+              Recordarme en este dispositivo (se guarda solo en tu navegador).{" "}
+              <strong>No lo uses en equipos compartidos.</strong>
+            </span>
           </label>
           {hayGuardado && (
             <button

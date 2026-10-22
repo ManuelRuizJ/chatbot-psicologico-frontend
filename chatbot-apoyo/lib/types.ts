@@ -36,6 +36,6 @@ export type Areas = Record<AreaCode, Area>;
 // Nombres completos fijos (sección 2 del contrato)
 export const AREA_NAMES: Record<AreaCode, string> = {
   FOE: "Formación y Orientación Educativa",
-  CAII: "Coordinación de Atención de Incidentes Inmediata",
+  CAII: "Coordinación de Intervención Inmediata de Incidentes",
   OPTA: "Clínica OPTA",
 };
