@@ -54,6 +54,9 @@ const mock = {
     if (!p.consentAccepted) { 
       throw new ApiError("NO_CONSENT", "Consentimiento requerido");
     }
+    if (p.name.trim().toLowerCase() === "error db") {
+      throw new ApiError("DB_UNAVAILABLE", "Base de datos no disponible");
+    }
     if (p.accessCode.trim() !== MOCK_ACCESS_CODE) {
       throw new ApiError("INVALID_ACCESS_CODE", "Código de acceso inválido");
     }

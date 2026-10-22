@@ -9,6 +9,7 @@ export type ErrorCode =
   | "SESSION_NOT_FOUND"
   | "EMPTY_MESSAGE"
   | "LLM_UNAVAILABLE"
+  | "DB_UNAVAILABLE"
   | "NETWORK" // solo del frontend: no hubo respuesta del servidor
   | "UNKNOWN"; // solo del frontend: respuesta con formato inesperado (ej. 422)
 
@@ -36,6 +37,6 @@ export type Areas = Record<AreaCode, Area>;
 // Nombres completos fijos (sección 2 del contrato)
 export const AREA_NAMES: Record<AreaCode, string> = {
   FOE: "Formación y Orientación Educativa",
-  CAII: "Coordinación de Atención de Incidentes Inmediata",
+  CAII: "Coordinación de Intervención Inmediata de Incidentes",
   OPTA: "Clínica OPTA",
 };
