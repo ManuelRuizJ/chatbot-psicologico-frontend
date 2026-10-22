@@ -1,5 +1,6 @@
 import type { Area, AreaCode } from "@/lib/types";
 import { AREA_NAMES } from "@/lib/types";
+import { contactoDe } from "@/lib/contactos";
 
 interface Props {
   code: AreaCode;
@@ -7,11 +8,12 @@ interface Props {
 }
 
 export default function TarjetaDerivacion({ code, area }: Props) {
-  const datos = [
-    ["Teléfono", area?.telefono],
-    ["Horario", area?.horario],
-    ["Ubicación", area?.ubicacion],
-  ].filter(([, valor]) => valor) as [string, string][];
+  const c = contactoDe(code, area);
+  const datos: [string, string][] = [
+    ["Teléfono", c.telefono],
+    ["Horario", c.horario],
+    ["Ubicación", c.ubicacion],
+  ];
 
   return (
     <aside
@@ -20,16 +22,14 @@ export default function TarjetaDerivacion({ code, area }: Props) {
     >
       <p className="text-sm text-texto-suave">Te sugerimos acercarte a:</p>
       <p className="mt-1 font-semibold">{AREA_NAMES[code]}</p>
-      {datos.length > 0 && (
-        <dl className="mt-3 space-y-1 text-sm">
-          {datos.map(([etiqueta, valor]) => (
-            <div key={etiqueta} className="flex gap-2">
-              <dt className="text-texto-suave">{etiqueta}:</dt>
+      <dl className="mt-3 space-y-1 text-sm">
+        {datos.map(([etiqueta, valor]) => (
+          <div key={etiqueta} className="flex gap-2">
+            <dt className="text-texto-suave">{etiqueta}:</dt>
               <dd>{valor}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
+          </div>
+        ))}
+      </dl>
     </aside>
   );
 }
